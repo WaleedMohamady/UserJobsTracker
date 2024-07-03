@@ -1,0 +1,10 @@
+/**
+ * Kendo UI v2024.2.514 (http://www.telerik.com/kendo-ui)
+ * Copyright 2024 Progress Software Corporation and/or one of its subsidiaries or affiliates. All rights reserved.
+ *
+ * Kendo UI commercial licenses may be obtained at
+ * http://www.telerik.com/purchase/license-agreement/kendo-ui-complete
+ * If you do not own a commercial license, this file shall be governed by the trial license terms.
+ */
+import"./kendo.core.js";var __meta__={id:"toggleinputbase",name:"ToggleInputBase",category:"web",description:"The ToggleInputBase component.",depends:["core"]};!function(e,t){var n=window.kendo,i=n.ui,s=i.Widget,o="change",a="disabled",c="checked",h=s.extend({init:function(e,t){var i=this;s.fn.init.call(i,e,t),i._wrapper(),i._initSettings(),i._attachEvents(),n.notify(i,n.ui)},events:[o],options:{name:"ToggleInputBase"},NS:".kendoToggleInputBase",RENDER_INPUT:e.noop,check:function(e){var t=this,n=t.element[0];if(undefined===e)return n.checked;n.checked!==e&&(t.options.checked=n.checked=e),e?t.element.attr(c,c):t.element.prop(c,!1)},destroy:function(){s.fn.destroy.call(this),this.wrapper.off(this.NS)},enable:function(e){var t=this.element;void 0===e&&(e=!0),this.options.enabled=e,e?t.prop(a,!1):t.attr(a,a)},toggle:function(){this.check(!this.element[0].checked)},_attachEvents:function(){this.element.on(o+this.NS,this._change.bind(this))},_change:function(){var e=this.element[0].checked;this.trigger(o,{checked:e})},_initSettings:function(){var e=this,t=e.element[0],n=e.options;null===n.checked&&(n.checked=t.checked),e.check(n.checked),n.enabled=n.enabled&&!e.element.attr(a),e.enable(n.enabled)},_wrapper:function(){var t=this,n=t.options;(0,t.RENDER_INPUT)(t.element,e.extend({},n)),t.element.removeClass("input-validation-error"),t.wrapper=t.element.wrap(`<span class="${n.wrapperClass}"></span>`).parent()},setOptions:function(t){this._clearCssClasses(t,this.element),this._setEvents(t),e.extend(this.options,t),this._applyCssClasses(this.element)}});i.plugin(h)}(window.kendo.jQuery);var kendo$1=kendo;export{kendo$1 as default};
+//# sourceMappingURL=kendo.toggleinputbase.js.map
