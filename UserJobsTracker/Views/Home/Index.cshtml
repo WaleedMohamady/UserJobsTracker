@@ -2,32 +2,177 @@
     ViewBag.Title = "Home Page";
 }
 
-<main>
-    <section class="row" aria-labelledby="aspnetTitle">
-        <h1 id="title">ASP.NET</h1>
-        <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-        <p><a href="https://asp.net" class="btn btn-primary btn-md">Learn more &raquo;</a></p>
-    </section>
+<div id="dvHRFilter">
 
-    <div class="row">
-        <section class="col-md-4" aria-labelledby="gettingStartedTitle">
-            <h2 id="gettingStartedTitle">Getting started</h2>
-            <p>
-                ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-                enables a clean separation of concerns and gives you full control over markup
-                for enjoyable, agile development.
-            </p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-        </section>
-        <section class="col-md-4" aria-labelledby="librariesTitle">
-            <h2 id="librariesTitle">Get more libraries</h2>
-            <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-        </section>
-        <section class="col-md-4" aria-labelledby="hostingTitle">
-            <h2 id="hostingTitle">Web Hosting</h2>
-            <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-        </section>
+    <div class="form-group">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-12">
+                    <h3 style="margin-top: 0px;margin-bottom: 5px;"><strong>@Html.Translate("Payroll Types")</strong></h3>
+                </div>
+            </div>
+        </div>
     </div>
-</main>
+    <div class="row"></div>
+
+    <div class="">
+        @Html.Addbutton("addJobBtn", "Home.Create")
+    </div>
+
+    <div id="jobWindow">
+        <div id="jobWindowData">
+        </div>
+    </div>
+</div>
+
+<div id="jobsGrid"></div>
+
+<script>
+    $(document).ready(function () {
+        $('#addJobBtn').on('click', function () {
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("Create", "Home")',
+                success: function (result) {
+                    $("#jobWindowData").html(result);
+                    $('#jobWindow').data("kendoWindow").center().open();
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    AjaxError(xhr, textStatus, errorThrown , '@Html.Translate("Network Error")');
+                }
+            });
+        });
+
+        $('#jobsGrid').kendoGrid({
+            dataSource: {
+                transport: {
+                    read: '@Url.Action("GetJobs", "Home")'
+                },
+                pageSize: 20,
+                schema: {
+                    model: {
+                        fields: {
+                            Id: { type: "int" },
+                            Name: { type: "string" },
+                            HireDate: { type: "string" },
+                        }
+                    }
+                },
+            },
+            sortable: true,
+            resizable: true,
+            pageable: {
+                refresh: true,
+                pageSizes: true,
+            },
+            columns: [
+                {
+                    field: "Edit",
+                    title: " ",
+                    template: '<a href="javascript:void(0);" onclick="EditJob(this);" class=" k-grid-edit"><i class="glyphicon glyphicon-pencil"></i></a>' ,
+                    width: '30px',
+                },
+                {
+                    field: "Delete",
+                    title: " ",
+                    template: '<a href="javascript:void(0);" onclick="DeleteJob(this);" class="grid-delete"><i class="glyphicon glyphicon-remove k-grid-add"></i></a>',
+                    width: '30px',
+                },
+                {
+                    field: "Id",
+                    hidden: true
+                },
+                {
+                    field: "Name",
+                    title: "@Html.Translate("Name")"
+                },
+                {
+                    field: "HireDate",
+                    title: "@Html.Translate("Hire Date")"
+                }
+            ]
+        });
+
+        $('#jobsGrid').on('dblclick', ".k-grid-content tr", function(e) {
+            var grid = $("#jobsGrid").data("kendoGrid");
+            var dataItem = grid.dataItem(e.currentTarget);
+            EditJobFunction(dataItem.Id);
+        });
+    });
+
+    var deletionConfirmed = false;
+    var selectedJobId = 0;
+
+    function EditJob(e) {
+        var grid = $("#jobsGrid").data("kendoGrid");
+        var dataItem = grid.dataItem($(e).closest("tr"));
+        EditJobFunction(dataItem.Id);
+    }
+
+    function DeleteJob(e) {
+        var grid = $("#jobsGrid").data("kendoGrid");
+        var dataItem = grid.dataItem($(e).closest("tr"));
+        selectedJobId = dataItem.Id;
+        jConfirm('@Html.Translate("Are you sure you want to delete this Job?")', '@Html.Translate("Delete Job")',
+            function (r) {
+                if (r === true) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("DeleteJob", "Home")',
+                        data: { JobId: selectedJobId },
+                        success: function (result) {
+                            if (!result) {
+                                jAlert("@Html.Translate("Error Happened !")");
+                            }
+                            else {
+                                var grid = $("#jobsGrid").data("kendoGrid");
+                                grid.dataSource.read();
+                            }
+                        },
+                        error: function (xhr, textStatus, errorThrown) {
+                            AjaxError(xhr, textStatus, errorThrown, '@Html.Translate("Network Error")');
+                        }
+                    });
+                }
+            }
+        );
+    }
+
+    function EditJobFunction(Id) {
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("Edit", "Home")',
+            data:{'Id': Id},
+            success: function (result) {
+                $("#jobWindowData").html(result);
+                $('#jobWindow').data("kendoWindow").center().open();
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                AjaxError(xhr, textStatus, errorThrown , '@Html.Translate("Network Error")');
+            }
+        });
+    }
+
+    $('#jobWindow').kendoWindow({
+        actions: ["Close"],
+        draggable: true,
+        modal: true,
+        title: "@Html.TranslateJs("Job")",
+        width: "60%",
+        visible: false
+    });
+
+    function Refresh() {
+        var grid = $("#grid").data("kendoGrid");
+        grid.dataSource.read();
+        $('#jobWindow').data("kendoWindow").close();
+    }
+
+    function OpenWindow() {
+        if ($('#jobWindow').data("kendoWindow")) {
+            var window = $('#jobWindow').data("kendoWindow");
+            window.center();
+            window.open();
+        }
+    }
+</script>

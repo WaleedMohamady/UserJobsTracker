@@ -7598,11 +7598,11 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\About.cshtml" />
-    <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Users\Login.cshtml" />
     <Content Include="Views\Users\Register.cshtml" />
+    <Content Include="Views\Home\_CreateJobsDetails.cshtml" />
+    <Content Include="Views\Home\_EditJobDetails.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\UserJobsTracker.BL\UserJobsTracker.BL.csproj">
