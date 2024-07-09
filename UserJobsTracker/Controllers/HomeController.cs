@@ -1,50 +1,44 @@
-﻿using Microsoft.AspNet.Identity;
-using System.Linq;
-using System.Security.Claims;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
+using UserJobsTracker.BL.DTOs;
 using UserJobsTracker.BL.Managers;
-using UserJobsTracker.DAL.Models;
 
 namespace UserJobsTracker.Controllers
 {
-    public class HomeController : Controller
+    [Authorize]
+    public class HomeController : BaseController
     {
+        #region Fields
         private readonly JobsManager _jobsManager;
         private readonly BranchesManager _branchesManager;
+        #endregion
+
+        #region CTOR
         public HomeController(JobsManager jobsManager, BranchesManager branchesManager)
         {
             _jobsManager = jobsManager;
             _branchesManager = branchesManager;
         }
+        #endregion
+
+        #region Index
         public ActionResult Index()
         {
-            var userId = User.Identity.GetUserId();
-            var username = User.Identity.GetUserName();
-
-            // Access other user-related information as needed
-            var claims = ((ClaimsIdentity)User.Identity).Claims;
-            var branchId = claims.FirstOrDefault(c => c.Type == "DefaultBranchId")?.Value;
-
-            ViewBag.UserId = userId;
-            ViewBag.Username = username;
-            ViewBag.BranchId = branchId;
-
+            var branches = _branchesManager.GetAll();
+            branches.Insert(0, new BranchDTO { Id = null, Name = "All"});
+            ViewBag.Branches = branches;
+            ViewBag.DefaultBranchId = CurrentClaim.DefaultBranchId;
             return View();
         }
+        #endregion
 
-        public JsonResult GetJobs()
-        {
-            var jobs = _jobsManager.GetAll();
-            return Json(jobs, JsonRequestBehavior.AllowGet);
-        }
-
+        #region Create
         public ActionResult Create()
         {
             ViewBag.Branches = _branchesManager.GetAll();
             return PartialView("_CreateJobsDetails");
         }
 
-        public JsonResult Save(Job job)
+        public JsonResult Save(CreateJobDTO job)
         {
             try
             {
@@ -57,7 +51,9 @@ namespace UserJobsTracker.Controllers
                 return Json(false, JsonRequestBehavior.AllowGet);
             }
         }
+        #endregion
 
+        #region Edit
         [HttpGet]
         public ActionResult Edit(int Id)
         {
@@ -67,12 +63,12 @@ namespace UserJobsTracker.Controllers
         }
 
         [HttpPost]
-        public ActionResult Edit(Job job)
+        public ActionResult Edit(UpdateJobDTO updateJobDTO)
         {
             try
             {
-                if (job == null) return Json(false, JsonRequestBehavior.AllowGet);
-                _jobsManager.Update(job);
+                if (updateJobDTO == null) return Json(false, JsonRequestBehavior.AllowGet);
+                _jobsManager.Update(updateJobDTO);
                 return Json(true, JsonRequestBehavior.AllowGet);
             }
             catch
@@ -80,7 +76,9 @@ namespace UserJobsTracker.Controllers
                 return Json(false, JsonRequestBehavior.AllowGet);
             }
         }
+        #endregion
 
+        #region Delete
         public ActionResult DeleteJob(int JobId)
         {
             try
@@ -93,5 +91,14 @@ namespace UserJobsTracker.Controllers
                 return Json(false, JsonRequestBehavior.AllowGet);
             }
         }
+        #endregion
+
+        #region APIs
+        public JsonResult GetJobs(int? branchId)
+        {
+            var jobs = _jobsManager.GetAllByBranchId(branchId);
+            return Json(jobs, JsonRequestBehavior.AllowGet);
+        }
+        #endregion
     }
 }

@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Data.Entity;
+using System.Data.Entity.SqlServer;
 using System.Linq;
 using UserJobsTracker.BL.DTOs;
 using UserJobsTracker.DAL.Models;
@@ -8,46 +10,71 @@ namespace UserJobsTracker.BL.Managers
 {
     public class JobsManager
     {
-        private readonly IRepository<Job> _repository;
+        #region Fields
+        private readonly IRepository<Job, int> _repository;
+        #endregion
 
-        public JobsManager(IRepository<Job> repository)
+        #region CTOR
+        public JobsManager(IRepository<Job, int> repository)
         {
             _repository = repository;
         }
+        #endregion
 
-        public List<JobDTO> GetAll()
+        #region Methods
+        public List<JobDTO> GetAllByBranchId(int? branchId)
         {
-            var jobs = _repository
-                .GetAll()
+            var jobsQuery = _repository
+                .GetAll();
+
+            if (branchId.HasValue)
+            {
+                jobsQuery = jobsQuery
+                    .Where(job => job.BranchId == branchId);
+            }
+            
+            var jobs = jobsQuery
                 .Select(job => new JobDTO
                 {
                     Id = job.Id,
                     Name = job.Name,
-                    HireDate = job.HireDate.ToShortDateString(),
+                    HireDate = job.HireDate
                 })
                 .ToList();
 
             return jobs;
         }
 
-        public Job GetById(int id)
+        public UpdateJobDTO GetById(int id)
         {
             var job = _repository.GetById(id);
-            return job;
+
+            var updateJobDTO = new UpdateJobDTO
+            {
+                Id = job.Id,
+                Name = job.Name,
+                HireDate = job.HireDate,
+                BranchId = job.BranchId,
+            };
+
+            return updateJobDTO;
         }
 
-        public void Add(Job job)
+        public void Add(CreateJobDTO job)
         {
-            _repository.Add(job);
+            var addedJob = new Job
+            {
+                Name = job.Name,
+                HireDate = job.HireDate,
+                BranchId = job.BranchId,
+            };
+            _repository.Add(addedJob);
             _repository.SaveChanges();
         }
 
-        public void Update(Job job)
+        public void Update(UpdateJobDTO updateJobDTO)
         {
-            var oldJob = _repository.GetById(job.Id);
-            oldJob.Name = job.Name;
-            oldJob.HireDate = job.HireDate;
-            oldJob.BranchId = job.BranchId;
+            _repository.Update(updateJobDTO, updateJobDTO.Id);
             _repository.SaveChanges();
         }
 
@@ -57,5 +84,6 @@ namespace UserJobsTracker.BL.Managers
             _repository.SaveChanges();
             return true;
         }
+        #endregion
     }
 }

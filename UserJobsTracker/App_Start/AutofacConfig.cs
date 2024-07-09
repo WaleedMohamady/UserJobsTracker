@@ -1,10 +1,10 @@
-﻿using Autofac.Integration.Mvc;
-using Autofac;
+﻿using Autofac;
+using Autofac.Integration.Mvc;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using System.Web.Mvc;
 using UserJobsTracker.BL.Managers;
 using UserJobsTracker.DAL.Context;
-using Microsoft.AspNet.Identity.EntityFramework;
-using Microsoft.AspNet.Identity;
 using UserJobsTracker.DAL.Models;
 using UserJobsTracker.DAL.Repositories;
 
@@ -22,7 +22,8 @@ namespace UserJobsTracker.App_Start
             // Register UserManager
             builder.RegisterType<SystemUsersManager>().AsSelf().InstancePerRequest();
             builder.RegisterType<BranchesManager>().AsSelf().InstancePerRequest();
-            builder.RegisterGeneric(typeof(Repository<>)).As(typeof(IRepository<>)).InstancePerRequest();
+            builder.RegisterType<JobsManager>().AsSelf().InstancePerRequest();
+            builder.RegisterGeneric(typeof(Repository<,>)).As(typeof(IRepository<,>)).InstancePerRequest();
 
             // Register IUserStore<SystemUser>
             builder.RegisterType<UserStore<SystemUser>>().As<IUserStore<SystemUser>>().InstancePerRequest();

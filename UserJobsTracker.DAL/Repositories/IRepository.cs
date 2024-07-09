@@ -1,14 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
 
 namespace UserJobsTracker.DAL.Repositories
 {
-    public interface IRepository<TEntity> where TEntity : class
+    public interface IRepository<TEntity, TKey> where TEntity : class
     {
-        List<TEntity> GetAll();
-        TEntity GetById(int id);
+        IQueryable<TEntity> GetAll();
+        TEntity GetById(TKey id);
         void Add(TEntity entity);
-        void Update(TEntity entity);
-        void Delete(int id);
+        void Update<TUpdateEntityDTO>(TUpdateEntityDTO updateEntityDTO, TKey id) where TUpdateEntityDTO : class;
+        void Delete(TKey id);
         void SaveChanges();
     }
 }

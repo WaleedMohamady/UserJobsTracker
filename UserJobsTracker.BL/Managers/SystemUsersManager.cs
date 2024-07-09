@@ -9,10 +9,7 @@ namespace UserJobsTracker.BL.Managers
 {
     public class SystemUsersManager : UserManager<SystemUser>
     {
-        public SystemUsersManager(IUserStore<SystemUser> store) : base(store)
-        {
-        }
-
+        public SystemUsersManager(IUserStore<SystemUser> store) : base(store) { }
         public static SystemUsersManager Create(IdentityFactoryOptions<SystemUsersManager> options, IOwinContext context)
         {
             var manager = new SystemUsersManager(new UserStore<SystemUser>(context.Get<UserJobsTrackerDbContext>()));

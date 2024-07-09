@@ -186,8 +186,10 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
+    <Compile Include="DateTimeModelBinder.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -5185,6 +5187,46 @@
     <None Include="KendoUI\vsdoc\kendo.dataviz.min.intellisense.js" />
     <None Include="KendoUI\vsdoc\kendo.web-vsdoc.js" />
     <None Include="KendoUI\vsdoc\kendo.web.min.intellisense.js" />
+    <Content Include="Kendo\js\jquery.min.js" />
+    <Content Include="Kendo\js\kendo.all.min.js" />
+    <Content Include="Kendo\js\kendo.aspnetmvc.min.js" />
+    <Content Include="Kendo\js\kendo.web.min.js" />
+    <Content Include="Kendo\styles\BlueOpal\editor.png" />
+    <Content Include="Kendo\styles\BlueOpal\imagebrowser.png" />
+    <Content Include="Kendo\styles\BlueOpal\indeterminate.gif" />
+    <Content Include="Kendo\styles\BlueOpal\loading-image.gif" />
+    <Content Include="Kendo\styles\BlueOpal\loading.gif" />
+    <Content Include="Kendo\styles\BlueOpal\loading_2x.gif" />
+    <Content Include="Kendo\styles\BlueOpal\markers.png" />
+    <Content Include="Kendo\styles\BlueOpal\markers_2x.png" />
+    <Content Include="Kendo\styles\BlueOpal\slider-h.gif" />
+    <Content Include="Kendo\styles\BlueOpal\slider-v.gif" />
+    <Content Include="Kendo\styles\BlueOpal\sprite.png" />
+    <Content Include="Kendo\styles\BlueOpal\sprite_2x.png" />
+    <Content Include="Kendo\styles\BlueOpal\sprite_kpi.png" />
+    <Content Include="Kendo\styles\BlueOpal\sprite_kpi_2x.png" />
+    <Content Include="Kendo\styles\Bootstrap\editor.png" />
+    <Content Include="Kendo\styles\Bootstrap\imagebrowser.png" />
+    <Content Include="Kendo\styles\Bootstrap\indeterminate.gif" />
+    <Content Include="Kendo\styles\Bootstrap\loading-image.gif" />
+    <Content Include="Kendo\styles\Bootstrap\loading.gif" />
+    <Content Include="Kendo\styles\Bootstrap\loading_2x.gif" />
+    <Content Include="Kendo\styles\Bootstrap\markers.png" />
+    <Content Include="Kendo\styles\Bootstrap\markers_2x.png" />
+    <Content Include="Kendo\styles\Bootstrap\slider-h.gif" />
+    <Content Include="Kendo\styles\Bootstrap\slider-v.gif" />
+    <Content Include="Kendo\styles\Bootstrap\sprite.png" />
+    <Content Include="Kendo\styles\Bootstrap\sprite_2x.png" />
+    <Content Include="Kendo\styles\Bootstrap\sprite_kpi.png" />
+    <Content Include="Kendo\styles\Bootstrap\sprite_kpi_2x.png" />
+    <Content Include="Kendo\styles\fonts\DejaVu\LICENSE.txt" />
+    <Content Include="Kendo\styles\fonts\glyphs\KendoUIGlyphs.svg" />
+    <Content Include="Kendo\styles\fonts\glyphs\WebComponentsIcons.svg" />
+    <Content Include="Kendo\styles\kendo.blueopal.min.css" />
+    <Content Include="Kendo\styles\kendo.bootstrap.min.css" />
+    <Content Include="Kendo\styles\kendo.common.min.css" />
+    <Content Include="Kendo\styles\kendo.default.min.css" />
+    <Content Include="Kendo\styles\kendo.rtl.min.css" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.esm.js" />
@@ -7576,6 +7618,25 @@
     <Content Include="KendoUI\README" />
     <Content Include="KendoUI\src\package.json" />
     <Content Include="KendoUI\styles\font-icons\kendo-font-icons.ttf" />
+    <Content Include="Kendo\styles\fonts\DejaVu\DejaVuSans-Bold.ttf" />
+    <Content Include="Kendo\styles\fonts\DejaVu\DejaVuSans-BoldOblique.ttf" />
+    <Content Include="Kendo\styles\fonts\DejaVu\DejaVuSans-ExtraLight.ttf" />
+    <Content Include="Kendo\styles\fonts\DejaVu\DejaVuSans-Oblique.ttf" />
+    <Content Include="Kendo\styles\fonts\DejaVu\DejaVuSans.ttf" />
+    <Content Include="Kendo\styles\fonts\DejaVu\DejaVuSansMono-Bold.ttf" />
+    <Content Include="Kendo\styles\fonts\DejaVu\DejaVuSansMono-BoldOblique.ttf" />
+    <Content Include="Kendo\styles\fonts\DejaVu\DejaVuSansMono-Oblique.ttf" />
+    <Content Include="Kendo\styles\fonts\DejaVu\DejaVuSansMono.ttf" />
+    <Content Include="Kendo\styles\fonts\DejaVu\DejaVuSerif-Bold.ttf" />
+    <Content Include="Kendo\styles\fonts\DejaVu\DejaVuSerif-BoldItalic.ttf" />
+    <Content Include="Kendo\styles\fonts\DejaVu\DejaVuSerif-Italic.ttf" />
+    <Content Include="Kendo\styles\fonts\DejaVu\DejaVuSerif.ttf" />
+    <Content Include="Kendo\styles\fonts\glyphs\KendoUIGlyphs.eot" />
+    <Content Include="Kendo\styles\fonts\glyphs\KendoUIGlyphs.ttf" />
+    <Content Include="Kendo\styles\fonts\glyphs\KendoUIGlyphs.woff" />
+    <Content Include="Kendo\styles\fonts\glyphs\WebComponentsIcons.eot" />
+    <Content Include="Kendo\styles\fonts\glyphs\WebComponentsIcons.ttf" />
+    <Content Include="Kendo\styles\fonts\glyphs\WebComponentsIcons.woff" />
     <None Include="Scripts\jquery-3.7.0.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.0.js" />
     <Content Include="Scripts\jquery-3.7.0.min.js" />
@@ -7646,6 +7707,9 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Views\Base\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

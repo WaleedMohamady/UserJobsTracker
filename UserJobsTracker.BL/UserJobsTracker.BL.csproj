@@ -80,9 +80,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DTOs\BranchDTO.cs" />
+    <Compile Include="DTOs\CreateJobDTO.cs" />
+    <Compile Include="DTOs\CurrentClaim.cs" />
     <Compile Include="DTOs\JobDTO.cs" />
     <Compile Include="DTOs\LoginDTO.cs" />
     <Compile Include="DTOs\RegisterDTO.cs" />
+    <Compile Include="DTOs\UpdateJobDTO.cs" />
     <Compile Include="Managers\BranchesManager.cs" />
     <Compile Include="Managers\JobsManager.cs" />
     <Compile Include="Managers\SystemUsersManager.cs" />

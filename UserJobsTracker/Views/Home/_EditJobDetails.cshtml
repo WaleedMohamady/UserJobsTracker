@@ -1,5 +1,5 @@
 ﻿@using System.Web.Script.Serialization
-@model UserJobsTracker.DAL.Models.Job
+@model UserJobsTracker.BL.DTOs.UpdateJobDTO
 
 <form id="jobForm">
     <input id="Id" type="hidden" value="@Model.Id" />
@@ -7,31 +7,30 @@
     <div class="form-group">
         <div class="col-md-12">
             <div class="col-md-4 ">
-                <label class="control-label">
-                    @Html.Translate("Name"):
-                </label>
+                <label class="control-label">Name:</label>
             </div>
             <div class="col-md-8 ">
-                <input id="Name" name="Name" value="@Model.Name" class="k-textbox" required="required" validationMessage="@Html.Translate("Name is required")" />
+                <input id="Name" name="Name" value="@Model.Name" class="k-textbox" required="required" validationMessage="Name is required" />
                 <span class="k-invalid-msg" data-for="Name"></span>
             </div>
         </div>
 
         <div class="col-md-12">
             <div class="col-md-4 ">
-                <label class="control-label">
-                    @Html.Translate("Hire Date"):
-                </label>
+                <label class="control-label">Hire Date:</label>
+            </div>
+            <div class="col-md-3">
+                <input id="hireDate" name="HireDate" value="@Model.HireDate" />
             </div>
         </div>
 
         <div class="col-md-12">
             <div class="col-md-4 ">
                 <label class="control-label">
-                    @Html.Translate("Branch"):
+                    Branch:
                 </label>
             </div>
-            <div class="col-md-8">
+            <div class="col-md-3">
                 <input id="BranchId" name="BranchId" value="@Model.BranchId" />
             </div>
         </div>
@@ -41,7 +40,7 @@
     <div class="form-group">
         <div class="col-md-12">
             <div class="col-md-offset-10">
-                <input type="button" class="btn k-button" value=@Html.Translate("Save") id="btnSave" />
+                <input type="button" class="btn k-button" value="Save" id="btnSave" />
             </div>
         </div>
     </div>
@@ -55,42 +54,45 @@
         $("#BranchId").kendoComboBox({
             dataTextField: "Name",
             dataValueField: "Id",
-            dataSource: {
-                data: Branches
-            }
+            dataSource: { data: Branches },
+            fillMode: "flat"
+        });
+
+        $("#hireDate").kendoDateTimePicker({
+            value: new Date()
         });
     });
 
     $('#btnSave').on('click', function () {
         var validator = $("#jobForm").kendoValidator().data("kendoValidator");
         if (!validator.validate()) {
-            jAlert('@Html.Translate("invalid data")');
+            alert('invalid data');
             return;
         }
 
         var job = {};
         job.Id = $("#Id").val();
-        job.Name = $("#Name").val();
-        job.HireDate = $("#HireDate").val();
+        job.Name = $("#Name").val();g
+        job.HireDate = $("#hireDate").val();
         job.BranchId = $("#BranchId").data("kendoComboBox").value();
         $.ajax({
             type: 'POST',
             contentType: "application/json; charset=utf-8",
             url: '@Url.Action("Edit", "Home")',
-            data: JSON.stringify({ Job: job }),
+            data: JSON.stringify({ updateJobDTO: job }),
             success: function (e) {
                 if (e) {
-                    jAlert('@Html.Translate("Job saved successfully")');
+                    alert('Job saved successfully');
                     $('#jobWindow').data("kendoWindow").close();
                     $('#jobsGrid').data('kendoGrid').dataSource.read();
                 }
                 else
                 {
-                    jAlert('@Html.Translate("error")');
+                    alert('error');
                 }
             },
             error: function (xhr, textStatus, errorThrown) {
-                AjaxError(xhr, textStatus, errorThrown, '@Html.Translate("Network Error")');
+                alert('Network Error');
             }
         });
     });

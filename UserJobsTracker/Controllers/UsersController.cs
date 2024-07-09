@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin.Security;
+using Newtonsoft.Json;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
@@ -40,8 +41,14 @@ namespace UserJobsTracker.Controllers
                 var user = _userManager.Find(model.Username, model.Password);
                 if (user != null)
                 {
+                    var currentClaim = new CurrentClaim
+                    {
+                        CurrentUserId = user.Id,
+                        CurrentUsername = user.UserName,
+                        DefaultBranchId = user.DefaultBranchId,
+                    };
                     var claimsIdentity = _userManager.CreateIdentity(user, DefaultAuthenticationTypes.ApplicationCookie);
-                    claimsIdentity.AddClaim(new Claim("DefaultBranchId", user.DefaultBranchId.ToString()));
+                    claimsIdentity.AddClaim(new Claim("CurrentClaim", JsonConvert.SerializeObject(currentClaim)));
                     HttpContext.GetOwinContext().Authentication.SignIn(new AuthenticationProperties() { IsPersistent = model.RememberMe }, claimsIdentity);
                     return RedirectToAction("Index", "Home");
                 }
@@ -77,6 +84,7 @@ namespace UserJobsTracker.Controllers
                 var user = new SystemUser
                 {
                     UserName = model.Username,
+                    DefaultBranchId = model.DefaultBranchId,
                 };
 
                 var result = await _userManager.CreateAsync(user, model.Password);

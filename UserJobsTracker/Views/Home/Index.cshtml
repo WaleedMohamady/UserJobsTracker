@@ -1,34 +1,50 @@
-﻿@{
+﻿@using System.Web.Script.Serialization
+@{
     ViewBag.Title = "Home Page";
 }
 
-<div id="dvHRFilter">
+<div class="card p-5">
+    <div class="card-header bg-white d-flex justify-content-between">
+        <h2>
+            Jobs
+        </h2>
+        <a id="addJobBtn" class="btn btn-success d-flex align-items-center">Add New Job</a>
+    </div>
 
-    <div class="form-group">
-        <div class="col-md-12">
-            <div class="row">
-                <div class="col-md-12">
-                    <h3 style="margin-top: 0px;margin-bottom: 5px;"><strong>@Html.Translate("Payroll Types")</strong></h3>
-                </div>
+    <div class="card-body">
+        <div class="mb-3">
+            <label>Default Branch</label>
+            <div>
+                <input id="DefaultBranchId" class="bg-white rounded" style="width: auto" />
             </div>
         </div>
-    </div>
-    <div class="row"></div>
-
-    <div class="">
-        @Html.Addbutton("addJobBtn", "Home.Create")
+        <div id="jobsGrid"></div>
     </div>
 
     <div id="jobWindow">
-        <div id="jobWindowData">
-        </div>
+        <div id="jobWindowData"></div>
     </div>
 </div>
 
-<div id="jobsGrid"></div>
 
-<script>
-    $(document).ready(function () {
+@section scripts{
+    <script>
+        var Branches = @Html.Raw(new JavaScriptSerializer().Serialize(ViewBag.Branches));
+
+        $(document).ready(function () {
+            LoadGrid();
+        });
+
+        $("#DefaultBranchId").kendoComboBox({
+            dataTextField: "Name",
+            dataValueField: "Id",
+            dataSource: { data: Branches },
+            value: "@ViewBag.DefaultBranchId",
+            change: function (e) {
+                LoadGrid();
+            }
+        });
+
         $('#addJobBtn').on('click', function () {
             $.ajax({
                 type: 'GET',
@@ -38,59 +54,9 @@
                     $('#jobWindow').data("kendoWindow").center().open();
                 },
                 error: function (xhr, textStatus, errorThrown) {
-                    AjaxError(xhr, textStatus, errorThrown , '@Html.Translate("Network Error")');
+                    alert('Network Error');
                 }
             });
-        });
-
-        $('#jobsGrid').kendoGrid({
-            dataSource: {
-                transport: {
-                    read: '@Url.Action("GetJobs", "Home")'
-                },
-                pageSize: 20,
-                schema: {
-                    model: {
-                        fields: {
-                            Id: { type: "int" },
-                            Name: { type: "string" },
-                            HireDate: { type: "string" },
-                        }
-                    }
-                },
-            },
-            sortable: true,
-            resizable: true,
-            pageable: {
-                refresh: true,
-                pageSizes: true,
-            },
-            columns: [
-                {
-                    field: "Edit",
-                    title: " ",
-                    template: '<a href="javascript:void(0);" onclick="EditJob(this);" class=" k-grid-edit"><i class="glyphicon glyphicon-pencil"></i></a>' ,
-                    width: '30px',
-                },
-                {
-                    field: "Delete",
-                    title: " ",
-                    template: '<a href="javascript:void(0);" onclick="DeleteJob(this);" class="grid-delete"><i class="glyphicon glyphicon-remove k-grid-add"></i></a>',
-                    width: '30px',
-                },
-                {
-                    field: "Id",
-                    hidden: true
-                },
-                {
-                    field: "Name",
-                    title: "@Html.Translate("Name")"
-                },
-                {
-                    field: "HireDate",
-                    title: "@Html.Translate("Hire Date")"
-                }
-            ]
         });
 
         $('#jobsGrid').on('dblclick', ".k-grid-content tr", function(e) {
@@ -98,47 +64,75 @@
             var dataItem = grid.dataItem(e.currentTarget);
             EditJobFunction(dataItem.Id);
         });
-    });
 
-    var deletionConfirmed = false;
-    var selectedJobId = 0;
+        $('#jobWindow').kendoWindow({
+            actions: ["Close"],
+            draggable: true,
+            modal: true,
+            title: "Job",
+            width: "60%",
+            visible: false
+        });
 
-    function EditJob(e) {
-        var grid = $("#jobsGrid").data("kendoGrid");
-        var dataItem = grid.dataItem($(e).closest("tr"));
-        EditJobFunction(dataItem.Id);
-    }
-
-    function DeleteJob(e) {
-        var grid = $("#jobsGrid").data("kendoGrid");
-        var dataItem = grid.dataItem($(e).closest("tr"));
-        selectedJobId = dataItem.Id;
-        jConfirm('@Html.Translate("Are you sure you want to delete this Job?")', '@Html.Translate("Delete Job")',
-            function (r) {
-                if (r === true) {
-                    $.ajax({
-                        type: 'POST',
-                        url: '@Url.Action("DeleteJob", "Home")',
-                        data: { JobId: selectedJobId },
-                        success: function (result) {
-                            if (!result) {
-                                jAlert("@Html.Translate("Error Happened !")");
+        function LoadGrid() {
+            $('#jobsGrid').kendoGrid({
+                dataSource: {
+                    transport: {
+                        read: '@Url.Action("GetJobs", "Home")?branchId=' + $("#DefaultBranchId").data("kendoComboBox").value()
+                    },
+                    pageSize: 20,
+                    schema: {
+                        model: {
+                            fields: {
+                                Id: { type: "int" },
+                                Name: { type: "string" },
+                                HireDate: { type: "date" },
                             }
-                            else {
-                                var grid = $("#jobsGrid").data("kendoGrid");
-                                grid.dataSource.read();
-                            }
-                        },
-                        error: function (xhr, textStatus, errorThrown) {
-                            AjaxError(xhr, textStatus, errorThrown, '@Html.Translate("Network Error")');
                         }
-                    });
-                }
-            }
-        );
-    }
+                    },
+                },
+                sortable: true,
+                resizable: true,
+                pageable: {
+                    refresh: true,
+                    pageSizes: true,
+                },
+                columns: [
+                    {
+                        field: "Id",
+                        hidden: true
+                    },
+                    {
+                        field: "Name",
+                        title: "Name"
+                    },
+                    {
+                        field: "HireDate",
+                        title: "Hire Date",
+                        template: "#= kendo.toString(HireDate, 'dd/MM/yyyy') #"
+                    },
+                    {
+                        field: "Actions",
+                        title: "Actions",
+                        template: '<a href="javascript:void(0);" onclick="EditJob(this);" class="btn btn-info">Edit</a>' + '<a href="javascript:void(0);" onclick="DeleteJob(this);" class="btn btn-danger mx-2">Delete</a>',
+                        width: 'auto',
+                    },
+                ]
+            });
+        }
 
-    function EditJobFunction(Id) {
+        function Refresh() {
+            var grid = $("#grid").data("kendoGrid");
+            grid.dataSource.read();
+            $('#jobWindow').data("kendoWindow").close();
+        }
+
+        function OpenWindow() {
+            var window = $('#jobWindow').data("kendoWindow");
+            window.center().open();
+        }
+
+        function EditJobFunction(Id) {
         $.ajax({
             type: 'GET',
             url: '@Url.Action("Edit", "Home")',
@@ -148,31 +142,39 @@
                 $('#jobWindow').data("kendoWindow").center().open();
             },
             error: function (xhr, textStatus, errorThrown) {
-                AjaxError(xhr, textStatus, errorThrown , '@Html.Translate("Network Error")');
+                alert('Network Error');
             }
         });
+        }
+
+        function EditJob(e) {
+        var grid = $("#jobsGrid").data("kendoGrid");
+        var dataItem = grid.dataItem($(e).closest("tr"));
+        EditJobFunction(dataItem.Id);
     }
 
-    $('#jobWindow').kendoWindow({
-        actions: ["Close"],
-        draggable: true,
-        modal: true,
-        title: "@Html.TranslateJs("Job")",
-        width: "60%",
-        visible: false
-    });
-
-    function Refresh() {
-        var grid = $("#grid").data("kendoGrid");
-        grid.dataSource.read();
-        $('#jobWindow').data("kendoWindow").close();
-    }
-
-    function OpenWindow() {
-        if ($('#jobWindow').data("kendoWindow")) {
-            var window = $('#jobWindow').data("kendoWindow");
-            window.center();
-            window.open();
+        function DeleteJob(e) {
+        var grid = $("#jobsGrid").data("kendoGrid");
+        var dataItem = grid.dataItem($(e).closest("tr"));
+        if (confirm('Are you sure you want to delete this Job?')) {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("DeleteJob", "Home")',
+                data: { JobId: dataItem.Id },
+                success: function (result) {
+                    if (!result) {
+                        alert("Error Happened!");
+                    } else {
+                        var grid = $("#jobsGrid").data("kendoGrid");
+                        grid.dataSource.read();
+                    }
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    alert('Network Error');
+                }
+            });
         }
     }
-</script>
+
+    </script>
+}
