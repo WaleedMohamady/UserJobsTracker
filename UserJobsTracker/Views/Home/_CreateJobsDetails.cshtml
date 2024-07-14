@@ -24,6 +24,15 @@
 
         <div class="col-md-12">
             <div class="col-md-4 ">
+                <label class="control-label">Leave Date:</label>
+            </div>
+            <div class="col-md-3">
+                <input id="leaveDate" name="LeaveDate" />
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="col-md-4 ">
                 <label class="control-label">Branch:</label>
             </div>
             <div class="col-md-3">
@@ -53,10 +62,14 @@
             fillMode: "flat"
         });
 
-        $("#hireDate").kendoDateTimePicker({
+        $("#hireDate").kendoDatePicker({
             value: new Date(),
             format: "dd/MM/yyyy",
-            parseFormats: ["dd/MM/yyyy", "yyyy-MM-dd"]
+        });
+
+        $("#leaveDate").kendoDatePicker({
+            value: new Date(),
+            format: "dd/MM/yyyy",
         });
     });
 
@@ -70,6 +83,7 @@
         var job = {};
         job.Name = $("#Name").val();
         job.HireDate = $("#hireDate").val();
+        job.LeaveDate = $("#leaveDate").val();
         job.BranchId = $("#BranchId").data("kendoComboBox").value();
         $.ajax({
             type: 'POST',

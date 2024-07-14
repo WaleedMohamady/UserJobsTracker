@@ -63,7 +63,7 @@ namespace UserJobsTracker.Controllers
         }
 
         [HttpPost]
-        public ActionResult Edit(UpdateJobDTO updateJobDTO)
+        public ActionResult Edit(UpdateJobNameDto updateJobDTO)
         {
             try
             {

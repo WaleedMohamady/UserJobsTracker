@@ -12,6 +12,8 @@ namespace UserJobsTracker.BL.DTOs
         [Required]
         public DateTime HireDate { get; set; }
 
+        public DateTime? LeaveDate { get; set; }
+
         [Required]
         public int BranchId { get; set; }
     }

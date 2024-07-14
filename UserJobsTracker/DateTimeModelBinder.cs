@@ -11,7 +11,7 @@ namespace UserJobsTracker
             var value = bindingContext.ValueProvider.GetValue(bindingContext.ModelName);
             if (value != null)
             {
-                var dateFormat = "dd/MM/yyyy"; // Define the format you expect from the client side
+                var dateFormat = "dd/MM/yyyy hh:mm:ss"; // Define the format you expect from the client side
                 if (DateTime.TryParseExact(value.AttemptedValue, dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateTime))
                 {
                     return dateTime;

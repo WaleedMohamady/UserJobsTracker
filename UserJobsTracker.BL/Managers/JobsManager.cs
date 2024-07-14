@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Data.Entity;
-using System.Data.Entity.SqlServer;
 using System.Linq;
 using UserJobsTracker.BL.DTOs;
 using UserJobsTracker.DAL.Models;
@@ -11,11 +9,11 @@ namespace UserJobsTracker.BL.Managers
     public class JobsManager
     {
         #region Fields
-        private readonly IRepository<Job, int> _repository;
+        private readonly IRepository<Job, long> _repository;
         #endregion
 
         #region CTOR
-        public JobsManager(IRepository<Job, int> repository)
+        public JobsManager(IRepository<Job, long> repository)
         {
             _repository = repository;
         }
@@ -45,16 +43,16 @@ namespace UserJobsTracker.BL.Managers
             return jobs;
         }
 
-        public UpdateJobDTO GetById(int id)
+        public UpdateJobNameDto GetById(int id)
         {
             var job = _repository.GetById(id);
 
-            var updateJobDTO = new UpdateJobDTO
+            var updateJobDTO = new UpdateJobNameDto
             {
                 Id = job.Id,
                 Name = job.Name,
-                HireDate = job.HireDate,
-                BranchId = job.BranchId,
+                //HireDate = job.HireDate,
+                //BranchId = job.BranchId,
             };
 
             return updateJobDTO;
@@ -66,13 +64,14 @@ namespace UserJobsTracker.BL.Managers
             {
                 Name = job.Name,
                 HireDate = job.HireDate,
+                LeaveDate = job.LeaveDate,
                 BranchId = job.BranchId,
             };
             _repository.Add(addedJob);
             _repository.SaveChanges();
         }
 
-        public void Update(UpdateJobDTO updateJobDTO)
+        public void Update(UpdateJobNameDto updateJobDTO)
         {
             _repository.Update(updateJobDTO, updateJobDTO.Id);
             _repository.SaveChanges();

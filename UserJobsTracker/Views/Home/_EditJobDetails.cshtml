@@ -1,5 +1,5 @@
 ﻿@using System.Web.Script.Serialization
-@model UserJobsTracker.BL.DTOs.UpdateJobDTO
+@model UserJobsTracker.BL.DTOs.UpdateJobNameDto
 
 <form id="jobForm">
     <input id="Id" type="hidden" value="@Model.Id" />
@@ -10,17 +10,17 @@
                 <label class="control-label">Name:</label>
             </div>
             <div class="col-md-8 ">
-                <input id="Name" name="Name" value="@Model.Name" class="k-textbox" required="required" validationMessage="Name is required" />
+                <input id="Name" name="Name" value="@Model.Name" class="k-textbox" @*required="required"*@ validationMessage="Name is required" />
                 <span class="k-invalid-msg" data-for="Name"></span>
             </div>
         </div>
 
-        <div class="col-md-12">
+        @*<div class="col-md-12">
             <div class="col-md-4 ">
                 <label class="control-label">Hire Date:</label>
             </div>
             <div class="col-md-3">
-                <input id="hireDate" name="HireDate" value="@Model.HireDate" />
+                <input id="HireDate" name="HireDate" value="@Model.HireDate" />
             </div>
         </div>
 
@@ -33,7 +33,7 @@
             <div class="col-md-3">
                 <input id="BranchId" name="BranchId" value="@Model.BranchId" />
             </div>
-        </div>
+        </div>*@
 
     </div>
 
@@ -48,7 +48,7 @@
 
 <script>
 
-    var Branches = @Html.Raw(new JavaScriptSerializer().Serialize(ViewBag.Branches));
+    @*var Branches = @Html.Raw(new JavaScriptSerializer().Serialize(ViewBag.Branches));
 
     $(document).ready(function() {
         $("#BranchId").kendoComboBox({
@@ -58,10 +58,11 @@
             fillMode: "flat"
         });
 
-        $("#hireDate").kendoDateTimePicker({
-            value: new Date()
+        $("#HireDate").kendoDatePicker({
+            value: new Date(),
+            format: "dd/MM/yyyy",
         });
-    });
+    });*@
 
     $('#btnSave').on('click', function () {
         var validator = $("#jobForm").kendoValidator().data("kendoValidator");
@@ -72,9 +73,10 @@
 
         var job = {};
         job.Id = $("#Id").val();
-        job.Name = $("#Name").val();g
-        job.HireDate = $("#hireDate").val();
-        job.BranchId = $("#BranchId").data("kendoComboBox").value();
+        job.Name = $("#Name").val();
+        //job.HireDate = $("#HireDate").val();
+        //job.BranchId = $("#BranchId").data("kendoComboBox").value();
+        console.log(job);
         $.ajax({
             type: 'POST',
             contentType: "application/json; charset=utf-8",

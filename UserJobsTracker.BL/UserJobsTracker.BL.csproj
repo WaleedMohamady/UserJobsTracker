@@ -87,6 +87,7 @@
     <Compile Include="DTOs\LoginDTO.cs" />
     <Compile Include="DTOs\RegisterDTO.cs" />
     <Compile Include="DTOs\UpdateJobDTO.cs" />
+    <Compile Include="DTOs\UpdateJobNameDto.cs" />
     <Compile Include="Managers\BranchesManager.cs" />
     <Compile Include="Managers\JobsManager.cs" />
     <Compile Include="Managers\SystemUsersManager.cs" />

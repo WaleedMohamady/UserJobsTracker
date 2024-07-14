@@ -8,7 +8,7 @@ namespace UserJobsTracker.DAL.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         [Required]
         [MaxLength(250)]
@@ -16,6 +16,8 @@ namespace UserJobsTracker.DAL.Models
 
         [Required]
         public DateTime HireDate { get; set; }
+
+        public DateTime? LeaveDate { get; set; }
 
         [Required]
         public int BranchId { get; set; }

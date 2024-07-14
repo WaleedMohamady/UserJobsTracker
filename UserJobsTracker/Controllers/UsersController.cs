@@ -31,6 +31,7 @@ namespace UserJobsTracker.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Login(LoginDTO model)
         {
             if (ModelState.IsValid)
@@ -91,8 +92,15 @@ namespace UserJobsTracker.Controllers
                 if (result.Succeeded)
                 {
                     // Sign in the user (optional)
-                    var identity = await _userManager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);
-                    HttpContext.GetOwinContext().Authentication.SignIn(new AuthenticationProperties() { IsPersistent = false }, identity);
+                    var currentClaim = new CurrentClaim
+                    {
+                        CurrentUserId = user.Id,
+                        CurrentUsername = user.UserName,
+                        DefaultBranchId = user.DefaultBranchId,
+                    };
+                    var claimsIdentity = _userManager.CreateIdentity(user, DefaultAuthenticationTypes.ApplicationCookie);
+                    claimsIdentity.AddClaim(new Claim("CurrentClaim", JsonConvert.SerializeObject(currentClaim)));
+                    HttpContext.GetOwinContext().Authentication.SignIn(new AuthenticationProperties() { IsPersistent = false }, claimsIdentity);
 
                     return RedirectToAction("Index", "Home");
                 }

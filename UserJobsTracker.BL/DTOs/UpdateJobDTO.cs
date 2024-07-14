@@ -5,7 +5,7 @@ namespace UserJobsTracker.BL.DTOs
 {
     public class UpdateJobDTO
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         [Required]
         public string Name { get; set; }
@@ -13,7 +13,10 @@ namespace UserJobsTracker.BL.DTOs
         [Required]
         public DateTime HireDate { get; set; }
 
+        public DateTime? LeaveDate { get; set; }
+
         [Required]
         public int BranchId { get; set; }
+        public string CreatedById { get; set; }
     }
 }

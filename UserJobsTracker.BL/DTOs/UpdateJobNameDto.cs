@@ -1,12 +1,14 @@
 ﻿using System;
-using UserJobsTracker.DAL.Models;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace UserJobsTracker.BL.DTOs
 {
-    public class JobDTO
+    public class UpdateJobNameDto
     {
         public long Id { get; set; }
         public string Name { get; set; }
-        public DateTime HireDate { get; set; }
     }
 }
