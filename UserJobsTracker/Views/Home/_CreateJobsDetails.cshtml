@@ -76,7 +76,11 @@
     $('.btn-Save').on('click', function () {
         var validator = $("#jobForm").kendoValidator().data("kendoValidator");
         if (!validator.validate()) {
-            jAlert('invalid data');
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Invalid Data!",
+            });
             return;
         }
 
@@ -92,16 +96,30 @@
             data: JSON.stringify({ Job: job}),
             success: function (e) {
                 if (e) {
-                    alert('Job saved successfully');
+                    Swal.fire({
+                        position: "center",
+                        icon: "success",
+                        title: "Job has been saved",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
                     $('#jobWindow').data("kendoWindow").close();
-                    $('#jobsGrid').data('kendoGrid').dataSource.read();
+                    Refresh();
                 }
                 else {
-                    alert('error');
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Something went wrong!",
+                    });
                 }
             },
             error: function (xhr, textStatus, errorThrown) {
-                alert('Network Error');
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Something went wrong!",
+                });
             }
         });
     });

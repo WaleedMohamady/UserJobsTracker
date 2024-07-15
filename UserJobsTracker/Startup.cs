@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
 using Owin;
@@ -8,7 +7,6 @@ using System.Web.Mvc;
 using UserJobsTracker.App_Start;
 using UserJobsTracker.BL.Managers;
 using UserJobsTracker.DAL.Context;
-using UserJobsTracker.DAL.Models;
 
 namespace UserJobsTracker
 {
@@ -31,13 +29,7 @@ namespace UserJobsTracker
             {
                 AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
                 LoginPath = new PathString("/Users/Login"),
-                //Provider = new CookieAuthenticationProvider
-                //{
-                //    OnValidateIdentity = SecurityStampValidator.OnValidateIdentity<UserManager<SystemUser>, SystemUser>(validateInterval: TimeSpan.FromMinutes(30),
-                //    regenerateIdentity: (manager, user) => user.GenerateUserIdentityAsync(manager))
-                //},
                 ExpireTimeSpan = TimeSpan.FromDays(1),
-                SlidingExpiration = true // Extend expiration on each request
             });
         }
     }

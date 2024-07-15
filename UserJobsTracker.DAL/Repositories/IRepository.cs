@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace UserJobsTracker.DAL.Repositories
 {
@@ -9,6 +10,7 @@ namespace UserJobsTracker.DAL.Repositories
         void Add(TEntity entity);
         void Update<TUpdateEntityDTO>(TUpdateEntityDTO updateEntityDTO, TKey id) where TUpdateEntityDTO : class;
         void Delete(TKey id);
+        void DeleteMultiple(List<TKey> entitiesToDelete);
         void SaveChanges();
     }
 }

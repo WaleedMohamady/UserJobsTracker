@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using System.Collections.Generic;
+using System.Web.Mvc;
 using UserJobsTracker.BL.DTOs;
 using UserJobsTracker.BL.Managers;
 
@@ -84,6 +85,21 @@ namespace UserJobsTracker.Controllers
             try
             {
                 var result = _jobsManager.Delete(JobId);
+                return Json(result, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(false, JsonRequestBehavior.AllowGet);
+            }
+        }
+        #endregion
+
+        #region Delete Multiple
+        public ActionResult DeleteMultipleJobs(List<long> JobsIds)
+        {
+            try
+            {
+                var result = _jobsManager.DeleteMultiple(JobsIds);
                 return Json(result, JsonRequestBehavior.AllowGet);
             }
             catch

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using UserJobsTracker.DAL.Context;
 
 namespace UserJobsTracker.DAL.Repositories
@@ -42,6 +43,12 @@ namespace UserJobsTracker.DAL.Repositories
         {
             var deletedEntity = GetById(id);
             _context.Set<TEntity>().Remove(deletedEntity);
+        }
+
+        public void DeleteMultiple(List<TKey> entitiesToDeleteIds)
+        {
+            var entitiesToDelete = GetAll().ToList().Where(entity => entitiesToDeleteIds.Contains((TKey)entity.GetType().GetProperty("Id").GetValue(entity))).ToList();
+            _context.Set<TEntity>().RemoveRange(entitiesToDelete);
         }
 
         public void SaveChanges()

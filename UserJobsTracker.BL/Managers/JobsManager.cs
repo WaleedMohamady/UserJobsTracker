@@ -83,6 +83,18 @@ namespace UserJobsTracker.BL.Managers
             _repository.SaveChanges();
             return true;
         }
+
+        public bool DeleteMultiple(List<long> idsList)
+        {
+            //var deletedEntities = _repository
+            //    .GetAll()
+            //    .Where(job => idsList.Contains(job.Id))
+            //    .ToList();
+
+            _repository.DeleteMultiple(idsList);
+            _repository.SaveChanges();
+            return true;
+        }
         #endregion
     }
 }
